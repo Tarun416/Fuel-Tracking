@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:gravity="center"
     android:layout_height="match_parent">
 
 
     <com.google.android.gms.common.SignInButton
         android:layout_width="match_parent"
-        android:layout_centerInParent="true"
         android:id="@+id/googleSignInButton"
         android:layout_marginLeft="@dimen/margin_32"
         android:layout_marginRight="@dimen/margin_32"
