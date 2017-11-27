@@ -13,6 +13,8 @@ import kotlinx.android.synthetic.main.fragment_price.*
  */
 class PriceFragment : Fragment()
 {
+
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater!!.inflate(R.layout.fragment_price,container,false)
     }
@@ -23,5 +25,7 @@ class PriceFragment : Fragment()
         petrolPrice.text=getString(R.string.rupee)+"79"
         dieselPrice.text=getString(R.string.rupee)+"99"
     }
+
+
 
 }

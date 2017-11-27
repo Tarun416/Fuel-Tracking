@@ -3,27 +3,24 @@ package com.track.fueltracking.ui
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import java.util.ArrayList
 
 /**
  * Created by Tarun on 11/25/17.
  */
-class PagerAdapter(fm: FragmentManager, private var mNumOfTabs: Int) : FragmentStatePagerAdapter(fm) {
+class PagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+
+    private val mFragmentList = ArrayList<Fragment>()
 
     override fun getItem(position: Int): Fragment? {
-
-        return when (position) {
-            0 -> {
-                PriceFragment()
-            }
-            1 -> {
-                HistoryFragment()
-            }
-
-            else -> null
-        }
+        return  mFragmentList[position]
     }
 
+    fun addFrag(fragment: Fragment) {
+        mFragmentList.add(fragment) }
+
+
     override fun getCount(): Int {
-        return mNumOfTabs
+        return mFragmentList.size
     }
 }
