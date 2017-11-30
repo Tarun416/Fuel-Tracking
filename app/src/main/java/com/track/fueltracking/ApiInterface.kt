@@ -3,6 +3,7 @@ package com.track.fueltracking
 import com.track.fueltracking.ui.home.model.DieselResponse
 import com.track.fueltracking.ui.home.model.LocationModel
 import com.track.fueltracking.ui.home.model.PriceResponse
+import com.track.fueltracking.ui.map.NearBySearchResponse
 import io.reactivex.Flowable
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -21,6 +22,9 @@ interface ApiInterface {
 
     @GET("/price")
     fun getDieselPrice(@Query("city") city: String,@Query("fuel_type") fuelType: String): Flowable<DieselResponse>
+
+    @GET("maps/api/place/nearbysearch/json?key=AIzaSyCpLg5e063NMm1dAlfTQQGtjRRoeDsdBq4&sensor=true")
+    fun getNearByFuel(@Query("type") type : String,@Query("radius") radius : String, @Query("location") location : String ) : Flowable<NearBySearchResponse>
 
 }
 

@@ -27,7 +27,6 @@ class HomeActivity : AppCompatActivity(), LocationListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, HomeContract.View {
 
-
     private lateinit var mCurrentLocation: Location
     private lateinit var priceFragment: PriceFragment
     private var city: String = ""
@@ -122,6 +121,8 @@ class HomeActivity : AppCompatActivity(), LocationListener,
     override fun onLocationChanged(p0: Location?) {
         mCurrentLocation = p0!!
         presenter.getCity("http://maps.googleapis.com/", p0.latitude.toString() + "," + p0.longitude.toString(), "AIzaSyCpLg5e063NMm1dAlfTQQGtjRRoeDsdBq4")
+        if(priceFragment!=null)
+            priceFragment.setLatLon(p0.latitude,p0.longitude)
     }
 
     override fun onConnected(p0: Bundle?) {

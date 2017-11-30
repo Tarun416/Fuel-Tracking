@@ -14,36 +14,36 @@ import io.reactivex.subscribers.DisposableSubscriber
 /**
  * Created by Tarun on 11/28/17.
  */
-class HomePresenter(private var view : HomeContract.View) : HomeContract.Presenter
-{
+class HomePresenter(private var view: HomeContract.View) : HomeContract.Presenter {
 
 
-    private lateinit var apiInterface : ApiInterface
-    private lateinit var apiInterface1 : ApiInterface
-    private lateinit var apiInterface2 : ApiInterface
+    private lateinit var apiInterface: ApiInterface
+    private lateinit var apiInterface1: ApiInterface
+    private lateinit var apiInterface2: ApiInterface
 
     private val compositeDisposable = CompositeDisposable()
-    private lateinit var city:String
+    private lateinit var city: String
 
-    override fun getCity(baseUrl : String,latlng: String, api_key: String) {
-        apiInterface=ApiUtils.getApiService(baseUrl, FuelTrackingApplication.instance)
+    override fun getCity(baseUrl: String, latlng: String, api_key: String) {
+        apiInterface = ApiUtils.getApiService(baseUrl, FuelTrackingApplication.instance)
 
-        val disposable = apiInterface.getStateCityFromLocation(api_key,latlng)
+        val disposable = apiInterface.getStateCityFromLocation(api_key, latlng)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSubscriber<LocationModel>()
-                {
+                .subscribeWith(object : DisposableSubscriber<LocationModel>() {
                     override fun onError(t: Throwable?) {
                         view.passCity("")
                     }
 
                     override fun onNext(t: LocationModel?) {
-                       val addressComponentList = t!!.results[0].address_components
-                        for(i in addressComponentList)
-                        {
-                            i.types
-                                    .filter { it.equals("locality", ignoreCase = true) }
-                                    .forEach { view.passCity(i.long_name) }
+
+                        if (t!!.results.isNotEmpty()) {
+                            val addressComponentList = t!!.results[0].address_components
+                            for (i in addressComponentList) {
+                                i.types
+                                        .filter { it.equals("locality", ignoreCase = true) }
+                                        .forEach { view.passCity(i.long_name) }
+                            }
                         }
 
                     }
@@ -57,23 +57,21 @@ class HomePresenter(private var view : HomeContract.View) : HomeContract.Present
         compositeDisposable.add(disposable)
     }
 
-    override fun getPetrolPrice(city : String )
-    {
+    override fun getPetrolPrice(city: String) {
         view.showProgress()
-        apiInterface1=ApiUtils.getApiService("https://fuelpriceindia.herokuapp.com/", FuelTrackingApplication.instance)
+        apiInterface1 = ApiUtils.getApiService("https://fuelpriceindia.herokuapp.com/", FuelTrackingApplication.instance)
 
-        this.city=city
+        this.city = city
 
-        if(this.city.equals("Bengaluru",true))
-            this.city="Bangalore"
+        if (this.city.equals("Bengaluru", true))
+            this.city = "Bangalore"
 
-        val disposable1 = apiInterface1.getPetrolPrice(this.city,"petrol")
+        val disposable1 = apiInterface1.getPetrolPrice(this.city, "petrol")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSubscriber<PriceResponse>()
-                {
+                .subscribeWith(object : DisposableSubscriber<PriceResponse>() {
                     override fun onNext(t: PriceResponse?) {
-                         view.showPetrolPrice(t!!.petrol)
+                        view.showPetrolPrice(t!!.petrol)
                         getDieselPrice()
                     }
 
@@ -82,7 +80,7 @@ class HomePresenter(private var view : HomeContract.View) : HomeContract.Present
                     }
 
                     override fun onError(t: Throwable?) {
-                           view.hideProgress()
+                        view.hideProgress()
                     }
 
                 })
@@ -94,18 +92,17 @@ class HomePresenter(private var view : HomeContract.View) : HomeContract.Present
 
     override fun getDieselPrice() {
 
-        apiInterface2=ApiUtils.getApiService("https://fuelpriceindia.herokuapp.com/", FuelTrackingApplication.instance)
+        apiInterface2 = ApiUtils.getApiService("https://fuelpriceindia.herokuapp.com/", FuelTrackingApplication.instance)
 
-        this.city=city
+        this.city = city
 
-        if(this.city.equals("Bengaluru",true))
-            this.city="Bangalore"
+        if (this.city.equals("Bengaluru", true))
+            this.city = "Bangalore"
 
-        val disposable1 = apiInterface2.getDieselPrice(this.city,"diesel")
+        val disposable1 = apiInterface2.getDieselPrice(this.city, "diesel")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSubscriber<DieselResponse>()
-                {
+                .subscribeWith(object : DisposableSubscriber<DieselResponse>() {
                     override fun onNext(t: DieselResponse?) {
                         view.hideProgress()
                         view.showDieselPrice(t!!.diesel)
@@ -126,8 +123,7 @@ class HomePresenter(private var view : HomeContract.View) : HomeContract.Present
     }
 
 
-    fun onStop()
-    {
+    fun onStop() {
         compositeDisposable.clear()
     }
 
