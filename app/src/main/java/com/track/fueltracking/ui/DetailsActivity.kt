@@ -3,6 +3,8 @@ package com.track.fueltracking.ui
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.track.fueltracking.R
+import com.track.fueltracking.ui.map.NearBySearchResponse
+import com.track.fueltracking.ui.map.Result
 import kotlinx.android.synthetic.main.activity_details.*
 
 /**
@@ -13,7 +15,10 @@ class DetailsActivity : AppCompatActivity()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
-        name.text=intent.extras.getString("name")
+
+      val response = intent.extras.getParcelable<Result>("nearBySearchResponse")
+
+        name.text=response.name
     }
 
 }

@@ -85,10 +85,11 @@ class MapActivity : AppCompatActivity(), MapContract.View, OnMapReadyCallback, G
         Log.d("position",position.toString())
 
         val intent = Intent(this@MapActivity,DetailsActivity::class.java)
-        intent.putExtra("name",nearBySearhResponse.results[position as Int].name)
-        startActivity(intent)
-        finish()
 
+        val bundle = Bundle()
+        bundle.putParcelable("nearBySearchResponse",nearBySearhResponse.results[position as Int])
+        intent.putExtras(bundle)
+        startActivity(intent)
         return false
     }
 
