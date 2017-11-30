@@ -11,21 +11,24 @@ import kotlinx.android.synthetic.main.fragment_price.*
 /**
  * Created by Tarun on 11/25/17.
  */
-class PriceFragment : Fragment()
-{
-
+class PriceFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_price,container,false)
+        return inflater!!.inflate(R.layout.fragment_price, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        petrolPrice.text=getString(R.string.rupee)+"79"
-        dieselPrice.text=getString(R.string.rupee)+"99"
     }
 
+    fun setPetrolPrice(price: Double) {
+        petrolPrice.text = getString(R.string.rupee)+price.toString()
+    }
+
+    fun setDieselPrice(price: Double) {
+        dieselPrice.text =  getString(R.string.rupee)+price.toString()
+    }
 
 
 }

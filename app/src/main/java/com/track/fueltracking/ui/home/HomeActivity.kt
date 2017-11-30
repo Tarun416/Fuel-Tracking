@@ -1,4 +1,4 @@
-package com.track.fueltracking.ui
+package com.track.fueltracking.ui.home
 
 import android.annotation.SuppressLint
 import android.location.Location
@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.location.LocationRequest
 import com.track.fueltracking.R
@@ -13,6 +14,10 @@ import kotlinx.android.synthetic.main.activity_home.*
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationListener
+import com.track.fueltracking.ui.HistoryFragment
+import com.track.fueltracking.ui.PagerAdapter
+import com.track.fueltracking.ui.PriceFragment
+import kotlinx.android.synthetic.main.fragment_price.*
 
 
 /**
@@ -24,6 +29,7 @@ class HomeActivity : AppCompatActivity(), LocationListener,
 
 
     private lateinit var mCurrentLocation: Location
+    private lateinit var priceFragment: PriceFragment
     private var city: String = ""
 
 
@@ -34,8 +40,8 @@ class HomeActivity : AppCompatActivity(), LocationListener,
     private lateinit var mLocationRequest: LocationRequest
     private lateinit var mGoogleApiClient: GoogleApiClient
 
-    private val INTERVAL = (1000 * 10).toLong()
-    private val FASTEST_INTERVAL = (1000 * 5).toLong()
+    private val INTERVAL = (1000 * 60 * 10).toLong()
+    private val FASTEST_INTERVAL = (1000 * 60 * 5).toLong()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +82,7 @@ class HomeActivity : AppCompatActivity(), LocationListener,
     protected fun createLocationRequest() {
         mLocationRequest = LocationRequest()
         mLocationRequest.interval = INTERVAL
+        mLocationRequest.smallestDisplacement = 10.toFloat()
         mLocationRequest.fastestInterval = FASTEST_INTERVAL
         mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
@@ -87,7 +94,7 @@ class HomeActivity : AppCompatActivity(), LocationListener,
 
         pagerAdapter = PagerAdapter(supportFragmentManager)
 
-        val priceFragment = PriceFragment()
+        priceFragment = PriceFragment()
         pagerAdapter.addFrag(priceFragment)
 
         val historyFragment = HistoryFragment()
@@ -114,11 +121,11 @@ class HomeActivity : AppCompatActivity(), LocationListener,
 
     override fun onLocationChanged(p0: Location?) {
         mCurrentLocation = p0!!
-        presenter.getCity("http://maps.googleapis.com/",p0.latitude.toString() + "," + p0.longitude.toString(), "AIzaSyDj_w10jPfH2bj4vELjmNn8U4KWQqx7rNo")
+        presenter.getCity("http://maps.googleapis.com/", p0.latitude.toString() + "," + p0.longitude.toString(), "AIzaSyCpLg5e063NMm1dAlfTQQGtjRRoeDsdBq4")
     }
 
     override fun onConnected(p0: Bundle?) {
-       startLocationUpdates()
+        startLocationUpdates()
     }
 
     override fun onConnectionSuspended(p0: Int) {
@@ -156,16 +163,32 @@ class HomeActivity : AppCompatActivity(), LocationListener,
 
 
     override fun passCity(city: String) {
-      if(city!=null && city.isNotEmpty()) {
-          location.setTextColor(ContextCompat.getColor(this,R.color.white))
-          location.text = "Current Location : "+city
-      }
-        else
-      {
-          location.text = "Sorry, couldn't find your location"
-          location.setTextColor(ContextCompat.getColor(this,R.color.red))
-      }
+        if (city != null && city.isNotEmpty()) {
+            location.setTextColor(ContextCompat.getColor(this, R.color.white))
+            location.text = "Current Location : " + city
+            presenter.getPetrolPrice(city)
+        } else {
+            location.text = "Sorry, couldn't find your location"
+            location.setTextColor(ContextCompat.getColor(this, R.color.red))
+        }
 
     }
+
+    override fun showProgress() {
+        progressBar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        progressBar.visibility = View.GONE
+    }
+
+    override fun showPetrolPrice(price: Double) {
+        priceFragment.setPetrolPrice(price)
+    }
+
+    override fun showDieselPrice(price: Double) {
+        priceFragment.setDieselPrice(price)
+    }
+
 
 }

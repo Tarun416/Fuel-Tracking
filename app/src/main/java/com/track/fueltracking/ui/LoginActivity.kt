@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser
 import android.widget.Toast
 import android.view.View
 import com.google.firebase.auth.GoogleAuthProvider
+import com.track.fueltracking.ui.home.HomeActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
 /**
@@ -68,7 +69,7 @@ class LoginActivity : AppCompatActivity() , View.OnClickListener {
     private fun takeUserToHomeScreen(currentUser: FirebaseUser?) {
         if(currentUser!=null)
         {
-            val intent = Intent(this@LoginActivity,HomeActivity::class.java)
+            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
             intent.putExtra("username",currentUser.displayName)
             startActivity(intent)
             finish()

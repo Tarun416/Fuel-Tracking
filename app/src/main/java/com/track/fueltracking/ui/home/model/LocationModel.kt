@@ -1,4 +1,4 @@
-package com.track.fueltracking.ui.model
+package com.track.fueltracking.ui.home.model
 
 /**
  * Created by Tarun on 11/28/17.

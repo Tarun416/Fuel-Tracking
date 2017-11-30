@@ -1,6 +1,8 @@
 package com.track.fueltracking
 
-import com.track.fueltracking.ui.model.LocationModel
+import com.track.fueltracking.ui.home.model.DieselResponse
+import com.track.fueltracking.ui.home.model.LocationModel
+import com.track.fueltracking.ui.home.model.PriceResponse
 import io.reactivex.Flowable
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -11,7 +13,14 @@ import retrofit2.http.Query
 
 interface ApiInterface {
     @GET("maps/api/geocode/json")
-    fun getStateCityFromLocation(@Query("latlng") latLng: String, @Query("api_key") apikey: String): Flowable<LocationModel>
+    fun getStateCityFromLocation(@Query("api_key") apikey: String,@Query("latlng") latLng: String ): Flowable<LocationModel>
+
+    @GET("/price")
+    fun getPetrolPrice(@Query("city") city: String, @Query("fuel_type") fuelType: String): Flowable<PriceResponse>
+
+
+    @GET("/price")
+    fun getDieselPrice(@Query("city") city: String,@Query("fuel_type") fuelType: String): Flowable<DieselResponse>
+
 }
 
-//AIzaSyDj_w10jPfH2bj4vELjmNn8U4KWQqx7rNo

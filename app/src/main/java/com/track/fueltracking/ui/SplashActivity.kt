@@ -17,6 +17,7 @@ import android.support.v7.app.AlertDialog
 import android.view.View
 import com.track.fueltracking.CommonUtils
 import com.track.fueltracking.PermissionUtils
+import com.track.fueltracking.ui.home.HomeActivity
 
 
 /**
