@@ -34,10 +34,12 @@ class PriceFragment : Fragment(), View.OnClickListener {
     }
 
     fun setPetrolPrice(price: Double) {
+        if(isAdded)
         petrolPrice.text = getString(R.string.rupee) + price.toString()
     }
 
     fun setDieselPrice(price: Double) {
+        if(isAdded)
         dieselPrice.text = getString(R.string.rupee) + price.toString()
     }
 
@@ -46,7 +48,6 @@ class PriceFragment : Fragment(), View.OnClickListener {
             R.id.fuelIcon -> {
                 if (latitude != 0.0) {
                     val intent = Intent(activity, MapActivity::class.java)
-                    val bundle = Bundle()
                     intent.putExtra("latitude", latitude)
                     intent.putExtra("longitude", longitude)
                     startActivity(intent)

@@ -13,7 +13,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.Marker
-import com.track.fueltracking.ui.DetailsActivity
+import com.track.fueltracking.ui.details.DetailsActivity
 
 
 /**
@@ -39,7 +39,7 @@ class MapActivity : AppCompatActivity(), MapContract.View, OnMapReadyCallback, G
         mapFragment.getMapAsync(this)
 
         presenter = MapPresenter(this@MapActivity)
-        presenter.getNearByFuel("gas_station", intent.extras.getDouble("latitude").toString() + "," + intent.extras.getDouble("longitude").toString(), "1000")
+        presenter.getNearByFuel("gas_station", intent.extras.getDouble("latitude").toString() + "," + intent.extras.getDouble("longitude").toString(), "2000")
     }
 
 
@@ -76,16 +76,16 @@ class MapActivity : AppCompatActivity(), MapContract.View, OnMapReadyCallback, G
             marker.tag = k
             // move map camera
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(14f))
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(13f))
         }
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
+
         val position = p0!!.tag
         Log.d("position",position.toString())
 
-        val intent = Intent(this@MapActivity,DetailsActivity::class.java)
-
+        val intent = Intent(this@MapActivity, DetailsActivity::class.java)
         val bundle = Bundle()
         bundle.putParcelable("nearBySearchResponse",nearBySearhResponse.results[position as Int])
         intent.putExtras(bundle)

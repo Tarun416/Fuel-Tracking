@@ -1,12 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/placeholder"
+        android:scaleType="fitXY"
+        android:id="@+id/fuelImage"/>
+
 
     <TextView
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_16"
         android:layout_marginTop="@dimen/margin_16"
-        android:id="@+id/name"/>
+        android:textSize="20sp"
+        android:layout_marginRight="@dimen/margin_16"
+        android:textColor="@color/black"
+        android:layout_marginLeft="@dimen/margin_16"
+        android:layout_below="@+id/fuelImage"
+        tools:text="Bharat Petrol Pump"/>
+    
+    
+    <TextView
+        android:id="@+id/ratingNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="34sp"
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_marginTop="@dimen/margin_14"
+        android:layout_marginRight="@dimen/margin_16"
+        android:layout_marginLeft="@dimen/margin_16"
+        android:layout_below="@+id/name"
+        tools:text="4.1"/>
+
+    <ImageButton
+        android:id="@+id/navigate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name"
+        android:background="@android:color/transparent"
+        android:layout_marginRight="@dimen/margin_16"
+        android:layout_marginTop="@dimen/margin_16"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_navigation_green"/>
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/ratingNumber"
+        android:layout_marginLeft="@dimen/margin_12"
+        android:isIndicator="true"
+        style="?android:attr/ratingBarStyleIndicator"
+        android:layout_height="wrap_content" />
+
+
+    <TextView
+        android:id="@+id/open"
+        android:layout_width="wrap_content"
+        tools:text="Open Now : true"
+        android:layout_below="@+id/ratingBar"
+        android:layout_marginLeft="@dimen/margin_16"
+        android:textColor="@color/green"
+        android:layout_marginTop="@dimen/margin_16"
+        android:textSize="16sp"
+        android:layout_height="wrap_content" />
+
+
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/open"
+        android:layout_marginLeft="@dimen/margin_16"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:layout_marginRight="@dimen/margin_16"
+        android:layout_marginTop="@dimen/margin_16"
+        tools:text="334 anand vihar, rastogi nafagr"/>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/margin_16"
+        android:weightSum="2"
+        android:layout_height="wrap_content">
+
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:id="@+id/pay"
+            android:layout_marginRight="@dimen/margin_8"
+            android:background="@drawable/button"
+            android:text="Pay via BHIM"
+            android:textColor="@color/white"
+            android:layout_height="48dp" />
+
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:id="@+id/track"
+            android:text="Track Info"
+            android:background="@drawable/button"
+            android:layout_height="48dp" />
+
+
+    </LinearLayout>
+
+
+
 
 </RelativeLayout>

@@ -29,7 +29,7 @@
         <activity android:name=".ui.home.HomeActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.DetailsActivity"
+        <activity android:name=".ui.details.DetailsActivity"
             android:screenOrientation="portrait"/>
 
         <activity android:name=".ui.LoginActivity"

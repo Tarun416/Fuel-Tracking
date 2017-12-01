@@ -184,10 +184,12 @@ class HomeActivity : AppCompatActivity(), LocationListener,
     }
 
     override fun showPetrolPrice(price: Double) {
+        if(priceFragment!=null)
         priceFragment.setPetrolPrice(price)
     }
 
     override fun showDieselPrice(price: Double) {
+        if(priceFragment!=null)
         priceFragment.setDieselPrice(price)
     }
 

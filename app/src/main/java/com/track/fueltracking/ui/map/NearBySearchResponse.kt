@@ -43,8 +43,8 @@ data class Result(
 		val icon: String, //https://maps.gstatic.com/mapfiles/place_api/icons/shopping-71.png
 		val id: String, //91ae80fada2f9e6c777396c918924e3e9531ddfc
 		val name: String, //Tibet Mall
-		val opening_hours: OpeningHours,
-		val photos: List<Photo>,
+		val opening_hours: OpeningHours?,
+		val photos: List<Photo>?,
 		val place_id: String, //ChIJK8BZqFsUrjsR8gqjkqPvsEk
 		val rating: Double, //3.7
 		val reference: String, //CmRRAAAA3NuVwdBsnMwvoWsmmKM6LBVq-uqm5pfmSA_rKStiS83oJAdWmMNsz0utNFM3MLY5bdQRl168yQArXU1zlhg5dBYn0NUDcDYpyzrbac3CZn1aXJWRQGhD4mpFZ74AiwrLEhAj9r1zezWxvs5DbF0LrrUcGhQJPEazIAGUxQrYqEpjLKlYDdqQMQ
@@ -57,7 +57,7 @@ data class Result(
 			source.readString(),
 			source.readString(),
 			source.readString(),
-			source.readParcelable<OpeningHours>(OpeningHours::class.java.classLoader),
+			source.readParcelable<OpeningHours>(OpeningHours::class.java.classLoader) ,
 			source.createTypedArrayList(Photo.CREATOR),
 			source.readString(),
 			source.readDouble(),
