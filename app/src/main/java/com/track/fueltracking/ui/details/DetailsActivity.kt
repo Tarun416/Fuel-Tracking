@@ -1,19 +1,31 @@
 package com.track.fueltracking.ui.details
 
+import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.track.fueltracking.CommonUtils
 import com.track.fueltracking.R
+import com.track.fueltracking.ui.home.HomeActivity
 import com.track.fueltracking.ui.map.Result
 import kotlinx.android.synthetic.main.activity_details.*
+import java.util.*
 
 /**
  * Created by Tarun on 12/1/17.
@@ -88,13 +100,54 @@ class DetailsActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.track -> {
+                val dialog = Dialog(this@DetailsActivity)
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                dialog.setCancelable(true)
+                dialog.setContentView(R.layout.custom_dialog)
+                dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+                val cancel = dialog.findViewById<Button>(R.id.cancel)
+                val submit = dialog.findViewById<Button>(R.id.submit)
+                val type = dialog.findViewById<Spinner>(R.id.fuel_type)
+                val quantity = dialog.findViewById<Spinner>(R.id.quantity)
+                val amount = dialog.findViewById<EditText>(R.id.amount)
+
+                cancel.setOnClickListener {
+                    dialog.dismiss()
+                }
+
+                submit.setOnClickListener {
+                    if (amount.text.isEmpty()) {
+                        Toast.makeText(this@DetailsActivity, "Please enter amount", Toast.LENGTH_LONG).show()
+                    } else {
+                        val location = Location("Location")
+                        location.latitude = response.geometry.location.lat
+                        location.longitude = response.geometry.location.lng
+
+                        val trackedData = TrackedData(type.selectedItem.toString(), amount.text.toString(),response.geometry.location.lat.toString(),response.geometry.location.lng.toString(),Date().toString(),
+                                quantity.selectedItem.toString())
+
+
+                        val firebaseDatabase = FirebaseDatabase.getInstance()
+                        val databaseReference = firebaseDatabase.reference
+                        databaseReference.child("trackedData").child(FirebaseAuth.getInstance().currentUser!!.displayName).child((FirebaseAuth.getInstance().uid)).push().setValue(trackedData)
+                        dialog.dismiss()
+                        Toast.makeText(this@DetailsActivity, "Congrats..!! Cashback earned", Toast.LENGTH_LONG).show()
+                        val intent = Intent(this@DetailsActivity, HomeActivity::class.java)
+                        intent.putExtra("cashbackawarded", true)
+                        startActivity(intent)
+                        finishAffinity()
+                    }
+                }
+
+                dialog.show()
 
             }
         }
     }
 
     private fun startPlayStoreIntent() {
-        CommonUtils.displaySnackBar(this@DetailsActivity, R.string.no_app_found,R.string.install_app, View.OnClickListener {
+        CommonUtils.displaySnackBar(this@DetailsActivity, R.string.no_app_found, R.string.install_app, View.OnClickListener {
             try {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=in.org.npci.upiapp")))
             } catch (anfe: ActivityNotFoundException) {
