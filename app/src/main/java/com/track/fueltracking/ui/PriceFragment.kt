@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.track.fueltracking.CommonUtils
 import com.track.fueltracking.R
 import com.track.fueltracking.ui.map.MapActivity
 import kotlinx.android.synthetic.main.fragment_price.*
@@ -46,6 +47,13 @@ class PriceFragment : Fragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.fuelIcon -> {
+
+                if(!CommonUtils.isOnline(activity))
+                {
+                    Toast.makeText(activity,"Please check your internet connection",Toast.LENGTH_LONG).show()
+                    return
+                }
+
                 if (latitude != 0.0) {
                     val intent = Intent(activity, MapActivity::class.java)
                     intent.putExtra("latitude", latitude)

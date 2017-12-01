@@ -1,5 +1,6 @@
 package com.track.fueltracking.ui.details
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -18,6 +19,11 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.location.LocationListener
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.track.fueltracking.CommonUtils
@@ -30,9 +36,19 @@ import java.util.*
 /**
  * Created by Tarun on 12/1/17.
  */
-class DetailsActivity : AppCompatActivity(), View.OnClickListener {
+class DetailsActivity : AppCompatActivity(), View.OnClickListener, LocationListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private lateinit var response: Result
+    private lateinit var mLocationRequest: LocationRequest
+    private lateinit var mGoogleApiClient: GoogleApiClient
+    private  var latitude: Double =0.0
+    private  var longitude: Double =0.0
+
+    private val INTERVAL = (1000 * 60 * 10).toLong()
+    private val FASTEST_INTERVAL = (1000 * 60 * 5).toLong()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +59,52 @@ class DetailsActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
+    public override fun onStart() {
+        super.onStart()
+        if (mGoogleApiClient.isConnected) {
+            startLocationUpdates()
+
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    protected fun startLocationUpdates() {
+        val pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this)
+
+    }
+
+
+
+
+    override fun onLocationChanged(p0: Location?) {
+        this.latitude= p0!!.latitude
+        this.longitude= p0!!.longitude
+    }
+
+    override fun onConnected(p0: Bundle?) {
+        startLocationUpdates()
+    }
+
+    override fun onConnectionSuspended(p0: Int) {
+
+    }
+
+    override fun onConnectionFailed(p0: ConnectionResult) {
+
+    }
+
+
     private fun initUi() {
+
+        createLocationRequest()
+
+        mGoogleApiClient = GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build()
+        mGoogleApiClient.connect()
+
         if (response.photos != null && response.photos!!.isNotEmpty()) {
 
             val photoUrl = "https://maps.googleapis.com/maps/api/place/photo?sensor=false&key=AIzaSyCpLg5e063NMm1dAlfTQQGtjRRoeDsdBq4&photoreference=" + response.photos!![0].photo_reference + "&maxwidth=1000"
@@ -80,10 +141,27 @@ class DetailsActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
+    protected fun createLocationRequest() {
+        mLocationRequest = LocationRequest()
+        mLocationRequest.interval = INTERVAL
+        mLocationRequest.smallestDisplacement = 10.toFloat()
+        mLocationRequest.fastestInterval = FASTEST_INTERVAL
+        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+    }
+
+
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.navigate -> {
+                 if(latitude>0)
+                 {
+                     val intent = Intent(android.content.Intent.ACTION_VIEW,
+                             Uri.parse("http://maps.google.com/maps?saddr="+latitude+","+longitude+"&daddr="+response.geometry.location.lat+","+response.geometry.location.lng))
+                     startActivity(intent)
 
+                 }
+                else
+                     Toast.makeText(this,"Not able to get your location",Toast.LENGTH_LONG).show()
             }
 
             R.id.pay -> {
@@ -117,14 +195,22 @@ class DetailsActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
                 submit.setOnClickListener {
-                    if (amount.text.isEmpty()) {
+
+                    if(!CommonUtils.isOnline(this))
+                    {
+                        Toast.makeText(this,"Please check your internet connection",Toast.LENGTH_LONG).show()
+
+                    }
+
+
+                   else if (amount.text.isEmpty()) {
                         Toast.makeText(this@DetailsActivity, "Please enter amount", Toast.LENGTH_LONG).show()
                     } else {
                         val location = Location("Location")
                         location.latitude = response.geometry.location.lat
                         location.longitude = response.geometry.location.lng
 
-                        val trackedData = TrackedData(type.selectedItem.toString(), amount.text.toString(),response.geometry.location.lat.toString(),response.geometry.location.lng.toString(),Date().toString(),
+                        val trackedData = TrackedData(type.selectedItem.toString(), amount.text.toString(), response.geometry.location.lat.toString(), response.geometry.location.lng.toString(), Date().toString(),
                                 quantity.selectedItem.toString())
 
 
@@ -155,6 +241,26 @@ class DetailsActivity : AppCompatActivity(), View.OnClickListener {
             }
         })
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (mGoogleApiClient.isConnected)
+            stopLocationUpdates()
+    }
+
+    protected fun stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this)
+        //Log.d(FragmentActivity.TAG, "Location update stopped .......................")
+    }
+
+    public override fun onResume() {
+        super.onResume()
+        if (mGoogleApiClient.isConnected) {
+            startLocationUpdates()
+            // Log.d(FragmentActivity.TAG, "Location update resumed .....................")
+        }
     }
 
 

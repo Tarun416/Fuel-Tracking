@@ -55,18 +55,24 @@ class HistoryFragment : Fragment() {
 
                     if (arrayList != null && arrayList.size > 0) {
                             Collections.reverse(arrayList)
-                        historyRecyclerView.visibility = View.VISIBLE
-                        adapter.notifyDataSetChanged()
-                        emptyTextView.visibility = View.GONE
+                        if(historyRecyclerView!=null ) {
+                            historyRecyclerView.visibility = View.VISIBLE
+                            adapter.notifyDataSetChanged()
+                            emptyTextView.visibility = View.GONE
+                        }
 
                     } else {
-                        historyRecyclerView.visibility = View.GONE
-                        emptyTextView.visibility = View.VISIBLE
+                        if(historyRecyclerView!=null ) {
+                            historyRecyclerView.visibility = View.GONE
+                            emptyTextView.visibility = View.VISIBLE
+                        }
                     }
 
                 } else {
-                    historyRecyclerView.visibility = View.GONE
-                    emptyTextView.visibility = View.VISIBLE
+                    if(historyRecyclerView!=null ) {
+                        historyRecyclerView.visibility = View.GONE
+                        emptyTextView.visibility = View.VISIBLE
+                    }
                 }
 
             }

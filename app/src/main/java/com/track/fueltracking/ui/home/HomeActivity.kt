@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.Toast
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.location.LocationRequest
 import com.track.fueltracking.R
@@ -14,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_home.*
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationListener
+import com.track.fueltracking.CommonUtils
 import com.track.fueltracking.ui.HistoryFragment
 import com.track.fueltracking.ui.PagerAdapter
 import com.track.fueltracking.ui.PriceFragment
@@ -29,8 +31,6 @@ class HomeActivity : AppCompatActivity(), LocationListener,
 
     private lateinit var mCurrentLocation: Location
     private lateinit var priceFragment: PriceFragment
-    private var city: String = ""
-
 
     private lateinit var presenter: HomePresenter
 
@@ -101,6 +101,10 @@ class HomeActivity : AppCompatActivity(), LocationListener,
 
         pager.adapter = pagerAdapter
 
+        if(intent!=null && intent.extras!=null && intent.extras.containsKey("cashbackawarded") ) {
+            pager.currentItem = 1
+        }
+
         pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
         tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -120,7 +124,10 @@ class HomeActivity : AppCompatActivity(), LocationListener,
 
     override fun onLocationChanged(p0: Location?) {
         mCurrentLocation = p0!!
+        if(CommonUtils.isOnline(this))
         presenter.getCity("http://maps.googleapis.com/", p0.latitude.toString() + "," + p0.longitude.toString(), "AIzaSyCpLg5e063NMm1dAlfTQQGtjRRoeDsdBq4")
+        else
+            Toast.makeText(this@HomeActivity,"Please check your internet connection",Toast.LENGTH_LONG).show()
         if(priceFragment!=null)
             priceFragment.setLatLon(p0.latitude,p0.longitude)
     }
@@ -139,6 +146,7 @@ class HomeActivity : AppCompatActivity(), LocationListener,
 
     override fun onPause() {
         super.onPause()
+        if(mGoogleApiClient.isConnected)
         stopLocationUpdates()
     }
 
