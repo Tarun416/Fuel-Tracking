@@ -96,7 +96,7 @@
             android:id="@+id/pay"
             android:layout_marginRight="@dimen/margin_8"
             android:background="@drawable/button"
-            android:text="Pay via BHIM"
+            android:text="Pay via UPI App"
             android:textColor="@color/white"
             android:layout_height="48dp" />
 

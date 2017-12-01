@@ -8,4 +8,6 @@
     <string name="open_location_settings">Open</string>
     <string name="some_permissions_denied">Some permissions Denied</string>
     <string name="retry">Retry</string>
+    <string name="no_app_found">No UPI app found</string>
+    <string name="install_app">Install app</string>
 </resources>

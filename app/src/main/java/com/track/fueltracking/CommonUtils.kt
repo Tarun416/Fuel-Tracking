@@ -23,6 +23,18 @@ class CommonUtils
 
         }
 
+
+        fun displaySnackBar(activity: Activity?, message: Int, option: Int, onClickListener: View.OnClickListener) {
+            try {
+                if (activity != null) {
+                    Snackbar.make(activity.findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).setAction(option, onClickListener).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+
     }
 
 }
